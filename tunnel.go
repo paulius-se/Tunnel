@@ -47,7 +47,7 @@ func main() {
 	signal.Notify(c, os.Interrupt)
 	go func() {
 		for sig := range c {
-			log.Printf("captured %v, teardown interface and exit", sig)
+			fmt.Printf("\ncaptured %v, teardown interface and exit\n", sig)
 			teardown(iface.Name())
 			os.Exit(1)
 		}
