@@ -117,3 +117,13 @@ func createTicker(f func()) (t *time.Ticker, c chan bool) {
 	}()
 	return ticker, done
 }
+
+func compareIPs(ips []net.IP, ipToCompare net.IP) (eq bool) {
+	for _, ip := range ips {
+		equal := ipToCompare.Equal(ip)
+		if equal {
+			return true
+		}
+	}
+	return false
+}

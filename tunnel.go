@@ -68,7 +68,8 @@ func main() {
 		// Apply parsed rules from last to first from the rules list
 		for i := len(rules) - 1; i >= 0; i-- {
 			rule := rules[i]
-			if rule.ipNet.Contains(header.Src) || rule.ipNet.Contains(header.Dst) {
+			if rule.ipNet != nil && (rule.ipNet.Contains(header.Src) || rule.ipNet.Contains(header.Dst)) ||
+				rule.ipAddresses != nil && (compareIPs(rule.ipAddresses, header.Src) || compareIPs(rule.ipAddresses, header.Dst)) {
 				if rule.ruleType == limitData {
 					// Apply limit data rules to IP packets
 					if rule.count < rule.limit {
