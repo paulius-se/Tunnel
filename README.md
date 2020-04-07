@@ -7,7 +7,7 @@ Currently supports Linux OS (tested on Ubuntu 18.04.1). Support for Mac OS X and
 
 Rules are specified in a text file lines in the following format:
 
-[addresses to limit in CIDR] [limit value][limit unit]
+<addresses to limit in CIDR> <limit value><limit unit>
 
 e.g.
 
@@ -42,6 +42,7 @@ Add the routing table entry to /etc/iproute2/rt_tables:
 200 Tun
 
 $ cat /etc/iproute2/rt_tables
+```
 #
 # reserved values
 #
@@ -55,7 +56,7 @@ $ cat /etc/iproute2/rt_tables
 #1	inr.ruhep
 
 200	Tun
-
+```
 
 # Run
 
