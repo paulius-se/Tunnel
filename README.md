@@ -75,7 +75,9 @@ Provided rule set file rules.txt contains the following IP addresses in CIDR not
 ```
 0.0.0.0/0 30s           - allows access to any IP address for 30 seconds
 172.217.21.132/32 2m    - allows access to www.google.com (172.217.21.132) for 2 minutes
-80.249.99.148/32 11mb   - allows to download 11 megabytes of data from ipv4.download.thinkbroadband.com (80.249.99.148)
+80.249.99.148/32 11mb   - allows to download 11 megabytes of data from ipv4.download.
+thinkbroadband.com (80.249.99.148)
+www.youtube.com 1h      - allows to access youtube for one hour
 ```
 Run the following commands:
 1. 
