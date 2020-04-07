@@ -19,6 +19,8 @@ Supported limit units:
 kb, mb, gb - number kilobytes, megabytes or gigabytes computer is allowed to download from an addresses using IP packets.
 s, m, h - number of seconds, minutes or hours computer is allowed to access specified addresses using TCP protocol.
 
+Lower rule in the list overwrites previous one for same address.
+
 
 # Build
 
@@ -98,7 +100,7 @@ Status:
 
 2.
 ```
-$ curl www.google.com
+$ curl 172.217.21.132
 ```
 The rule '172.217.21.132/32 2m' will be activated. The following CLI output can be observed:
 ```
