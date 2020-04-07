@@ -78,7 +78,8 @@ Provided rule set file rules.txt contains the following IP addresses in CIDR not
 80.249.99.148/32 11mb   - allows to download 11 megabytes of data from ipv4.download.thinkbroadband.com (80.249.99.148)
 ```
 Run the following commands:
-1. 
+
+1.
 ```
 $ curl http://ipv4.download.thinkbroadband.com/5MB.zip --output 5mb.zip
 ```
