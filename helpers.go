@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"net"
 	"time"
@@ -126,4 +127,33 @@ func compareIPs(ips []net.IP, ipToCompare net.IP) (eq bool) {
 		}
 	}
 	return false
+}
+
+func printStatus(rule rule, ruleIdx int, limitReached bool) {
+	var displayLimitUnit string
+
+	if limitReached {
+		if rule.ruleType == limitTime {
+			displayLimitUnit = "sec"
+		} else if rule.ruleType == limitData {
+			displayLimitUnit = "bytes"
+		}
+		if rule.ipNet != nil {
+			fmt.Printf("\033[2K\r%v limit %v %v reached for rule #%v", rule.ipNet, rule.limit, displayLimitUnit, ruleIdx)
+		} else {
+			fmt.Printf("\033[2K\r%v limit %v %v reached for rule #%v", rule.domain, rule.limit, displayLimitUnit, ruleIdx)
+		}
+		return
+	}
+
+	if rule.ruleType == limitTime {
+		displayLimitUnit = "sec time passed"
+	} else if rule.ruleType == limitData {
+		displayLimitUnit = "bytes transfered"
+	}
+	if rule.ipNet != nil {
+		fmt.Printf("\033[2K\rwrite packet for %v, %v of %v %v for rule #%v", rule.ipNet, rule.count, rule.limit, displayLimitUnit, ruleIdx)
+	} else {
+		fmt.Printf("\033[2K\rwrite packet for %v, %v of %v %v for rule #%v", rule.domain, rule.count, rule.limit, displayLimitUnit, ruleIdx)
+	}
 }

@@ -22,6 +22,7 @@ type rule struct {
 	ipAddress   net.IP
 	ipNet       *net.IPNet
 	ipAddresses []net.IP
+	domain      string
 	limitValue  int64
 	limitUnit   string
 	ruleType    ruleType
@@ -96,22 +97,24 @@ func parseRuleSetFile(rulesFile string) (rules []rule) {
 	for _, line := range splitData {
 		splitLineData := bytes.Split(line, []byte(" "))
 		if len(splitLineData) > 1 {
-			ip, ipnet, err := net.ParseCIDR(string(splitLineData[0]))
-			var parseCIDRError error = err
+			ip, ipnet, parseCIDRError := net.ParseCIDR(string(splitLineData[0]))
 			var ipAddressesStr []string
-			if err != nil {
+			var domain string
+			if parseCIDRError != nil {
 				// attempt to resolve domain name
 				ipAddrs, lookupHostError := net.LookupHost(string(splitLineData[0]))
-				ipAddressesStr = ipAddrs
-				if parseCIDRError != nil && lookupHostError != nil {
+				if lookupHostError != nil {
 					log.Fatal("The argument", splitLineData[0], "does not appear to be a valid CIDR address nor domain name")
 				}
+				ipAddressesStr = ipAddrs
+				domain = string(splitLineData[0])
 			}
 			value, unit := parseLimit(string(splitLineData[1]))
 			rs = append(rs, rule{
 				ipAddress:   ip,
 				ipNet:       ipnet,
 				ipAddresses: parseIPAddresses(ipAddressesStr),
+				domain:      domain,
 				limitUnit:   unit,
 				limitValue:  value,
 				ruleType:    getRuleType(unit),
@@ -125,7 +128,7 @@ func parseRuleSetFile(rulesFile string) (rules []rule) {
 		if rule.ipNet != nil {
 			fmt.Printf("#%v %v %v%v\n", i, rule.ipNet, rule.limitValue, rule.limitUnit)
 		} else {
-			fmt.Printf("#%v %v %v%v\n", i, rule.ipAddresses, rule.limitValue, rule.limitUnit)
+			fmt.Printf("#%v %v %v %v%v\n", i, rule.domain, rule.ipAddresses, rule.limitValue, rule.limitUnit)
 		}
 	}
 	return rs
