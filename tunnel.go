@@ -68,15 +68,16 @@ func main() {
 		// Apply parsed rules from last to first from the rules list
 		for i := len(rules) - 1; i >= 0; i-- {
 			rule := rules[i]
-			if rule.ipNet.Contains(header.Src) || rule.ipNet.Contains(header.Dst) {
+			if rule.ipNet != nil && (rule.ipNet.Contains(header.Src) || rule.ipNet.Contains(header.Dst)) ||
+				rule.ipAddresses != nil && (compareIPs(rule.ipAddresses, header.Src) || compareIPs(rule.ipAddresses, header.Dst)) {
 				if rule.ruleType == limitData {
 					// Apply limit data rules to IP packets
 					if rule.count < rule.limit {
 						rules[i].count += int64(length)
-						fmt.Printf("\033[2K\rwrite packet for %v, %v of %v bytes transfered for rule #%v", rule.ipAddress, rule.count, rule.limit, i)
+						printStatus(rule, i, false)
 						writePacket(iface, packet, length, header, tunInputIP, tunOutputIP)
 					} else {
-						fmt.Printf("\033[2K\r%v limit %v bytes reached for rule #%v", rule.ipAddress, rule.limit, i)
+						printStatus(rule, i, true)
 					}
 				} else if rule.ruleType == limitTime &&
 					(header.Protocol == internetProtocolTCP ||
@@ -98,10 +99,10 @@ func main() {
 						}
 					}
 					if rule.count < rule.limit {
-						fmt.Printf("\033[2K\rwrite packet for %v, %v of %v sec time passed for rule #%v", rule.ipAddress, rule.count, rule.limit, i)
+						printStatus(rule, i, false)
 						writePacket(iface, packet, length, header, tunInputIP, tunOutputIP)
 					} else {
-						fmt.Printf("\033[2K\r%v limit %v sec reached for rule #%v", rule.ipAddress, rule.limit, i)
+						printStatus(rule, i, true)
 					}
 				}
 				break
