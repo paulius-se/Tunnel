@@ -19,7 +19,45 @@ Supported limit units:
 kb, mb, gb - number kilobytes, megabytes or gigabytes computer is allowed to download from an addresses using IP packets.
 s, m, h - number of seconds, minutes or hours computer is allowed to access specified addresses using TCP protocol.
 
-Lower rule in the list overwrites previous one for same address.
+Lower rule in the list overwrites previous one with same address.
+
+
+# Prerequisities
+
+Check and make these changes in `setup.go` if needed.
+
+1. IP addresses for Tun interface. Make sure these are not used for other interfaces.
+```
+tunInputIPAdr    = "10.0.0.1"
+tunOutputIPAdr   = "10.0.0.2"
+```
+2. Set outgoing net interface name for your system.
+```
+outgoingNetIface = "enp0s3"
+```
+3. Set routing table name:
+```
+routingTableName = "Tun"
+```
+4. Add the routing table entry `200 Tun` to /etc/iproute2/rt_tables: 
+Route tables file should look like this
+```
+$ cat /etc/iproute2/rt_tables
+
+#
+# reserved values
+#
+255	local
+254	main
+253	default
+0	unspec
+#
+# local
+#
+#1	inr.ruhep
+
+200	Tun
+```
 
 
 # Build
@@ -37,36 +75,13 @@ In order to build, run the following commands in terminal:
 The output file should appear as `tunnel`.
 
 
-# Prerequisities
-
-Add the routing table entry to /etc/iproute2/rt_tables: 
-
-`200 Tun`
-
-$ cat /etc/iproute2/rt_tables
-```
-#
-# reserved values
-#
-255	local
-254	main
-253	default
-0	unspec
-#
-# local
-#
-#1	inr.ruhep
-
-200	Tun
-```
-
 # Run
 
 To run the network filter:
 ```
 $ sudo ./tunnel -r rules.txt
 ```
-Note: 'sudo' is required to make Tun interface and routing setup.
+Note: 'sudo' is required to make Tun interface and routing setup. It serves for removal of these settings on exit as well.
 
 
 # Usage
@@ -81,7 +96,7 @@ www.youtube.com 1h      - allows youtube for one hour
 ```
 Run the following commands:
 
-1.
+1. Data limit case
 ```
 $ curl http://ipv4.download.thinkbroadband.com/5MB.zip --output 5mb.zip
 ```
@@ -101,7 +116,7 @@ Status:
 80.249.99.148 limit 11534336 bytes reached for rule #2
 ```
 
-2.
+2. Time limit case
 ```
 $ curl 172.217.21.132
 ```
