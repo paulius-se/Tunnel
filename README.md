@@ -19,7 +19,7 @@ Supported limit units:
 kb, mb, gb - number kilobytes, megabytes or gigabytes computer is allowed to download from an addresses using IP packets.
 s, m, h - number of seconds, minutes or hours computer is allowed to access specified addresses using TCP protocol.
 
-Lower rule in the list overwrites previous one with same address.
+Lower rule in the list overwrites upper one with same address.
 
 
 # Prerequisities
@@ -35,12 +35,11 @@ tunOutputIPAdr   = "10.0.0.2"
 ```
 outgoingNetIface = "enp0s3"
 ```
-3. Set routing table name:
+3. Set routing table name.
 ```
 routingTableName = "Tun"
 ```
-4. Add the routing table entry `200 Tun` to /etc/iproute2/rt_tables: 
-Route tables file should look like this
+4. Add the routing table entry `200 Tun` to /etc/iproute2/rt_tables. Route tables file should look like this:
 ```
 $ cat /etc/iproute2/rt_tables
 
@@ -108,12 +107,12 @@ Parsed rules from rules.txt
 #2 80.249.99.148/32 11mb
 Setup interface:  tun0
 Status:
-write packet for 80.249.99.148, 5484083 of 11534336 bytes transfered for rule #2
+write packet for 80.249.99.148/32, 5484083 of 11534336 bytes transfered for rule #2
 ```
 When data transfer limit reached the CLI blocks the IP address and output to console:
 ```
 Status:
-80.249.99.148 limit 11534336 bytes reached for rule #2
+80.249.99.148/32 limit 11534336 bytes reached for rule #2
 ```
 
 2. Time limit case
@@ -128,12 +127,12 @@ Parsed rules from rules.txt
 #2 80.249.99.148/32 11mb
 Setup interface:  tun0
 Status:
-write packet for 172.217.21.132, 6 of 120 sec time passed for rule #1
+write packet for 172.217.21.132/32, 6 of 120 sec time passed for rule #1
 ```
 When specified time ellapsed tunnel CLI blocks access to the IP address and will output to console:
 ```
 Status:
-172.217.21.132 limit 120 sec reached for rule #1
+172.217.21.132/32 limit 120 sec reached for rule #1
 ```
 
 Press `ctrl+c` to exit tunnel and restore interface and routing settings.
